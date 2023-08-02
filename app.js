@@ -5,22 +5,15 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const { storage } = require('./upload');
 
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:4200' }));
-const PORT = 3000; // Vous pouvez modifier le port selon vos besoins
+const PORT = 3000; 
 
-// Configurer Multer pour l'upload des fichiers
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads'); // Dossier de destination pour les fichiers téléchargés
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Renommer le fichier téléchargé (utilisation d'un timestamp pour éviter les doublons)
-  },
-});
-const upload = multer({ storage });
+
+const upload = multer(storage);
 
 // Route pour l'upload de fichier
 app.post('/upload', upload.single('file'), (req, res) => {
